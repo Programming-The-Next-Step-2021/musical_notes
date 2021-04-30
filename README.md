@@ -1,2 +1,2 @@
 # musical_notes
-Tool to help you learn to read notation and recognize notes by pitch.
+Tool to help you learn to read notation and, if time allows, to recognize notes by pitch.
