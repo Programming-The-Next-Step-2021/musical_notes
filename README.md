@@ -1,2 +1,2 @@
 # musical_notes
-Tool to help you learn to read notation and, if time allows, to recognize notes by pitch.
+Tool to help you learn to read notation and, if time allows, to recognize notes by pitch. This tool will allow you to test your recognition of musical notation. You will be presented with a note in the G scale, after which you will be asked to type which note is presented to you. The program wil give you feedback on whether you were correct or incorrect before moving on to the next note. It will also save your answers so that you can see which notes you're still struggling with. If time allows, I will implement the option to switch scales, and to test your ability to recognize tones by pitch, in the same way. Enjoy!
