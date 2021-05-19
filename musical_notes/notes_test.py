@@ -4,12 +4,9 @@ from tkinter import *
 from PIL import ImageTk, Image
 from random import randint
 
+def imagegen(numb, imagelist):
+    return "musical_notes/musicalnotes/" + imagelist[numb]+".png"
 
-class random_image:
-    # Random number generator:
-    def __init__ (self, inputlist):
-        randnumb = randint(0, len(inputlist)-1)
-        return randnumb
 
 
 class game_notes:
@@ -41,13 +38,12 @@ class game_notes:
             notes_list = ['C_test', 'C1_test', 'D_test', 'D1_test', 'E_test', 'E1_test', 'F_test', 'F1_test', 'G_test', 'G1_test', 'A_test', 'A1_test', 'B_test', 'B1_test']
 
             # Random number generator:
-            def randimg (self, inputlist):
-                randnumb = randint(0, len(inputlist)-1)
-                randnote = "musical_notes/musicalnotes/" + inputlist[randnumb]+".png"
+            randnumb = randint(0, len(notes_list)-1)
+            randnote = "musical_notes/musicalnotes/" + notes_list[randnumb]+".png"
 
             # Creating images:
             global note_image
-            note_image = ImageTk.PhotoImage(Image.open(randimg(notes_list)))
+            note_image = ImageTk.PhotoImage(Image.open(randnote))
             show_note = Label(start_note_practice_frame, image=note_image)
             show_note.pack(pady=15)
 
