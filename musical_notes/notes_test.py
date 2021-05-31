@@ -10,38 +10,47 @@ import time
 
 class random_image:
     # Random number generator:
-    def __init__ (self, inputlist):
+    def __init__ (inputlist):
         randnumb = randint(0, len(inputlist)-1)
         return randnumb
 
 
-class game_notes:
+class game_notes(Tk):
     """
     This package will help you learn to recognize musical notes. Run the program and it will give you a note in musical notation.
-    Next, type the letter of the note you think it corresponds to. The program will then tell you whether you're right or wrong.
-    Press enter to move onto the next note. When you're done practicing, hit the escape key to finish your session. 
+    Next, type the letter of the note you think it corresponds to. The program will then tell you whether you're right or wrong and what your score for that note is.
+    Press enter to move onto the next note. When you're done practicing, click exit in the menu to shut off the program.
     The program will show you your average accuracy, and the accuracy for separate notes. Good luck!
+
+    -- initializing: musical_notes.game_notes()
     """
     
 
     def __init__(self):
         # Loading and initializing:---------------------------------------------------------------------------------------------------------------------------------
-
+        global root
         root = Tk()
         root.title('notes_test')
         root.geometry("700x600")
-
-        # Create randomized notes:----------------------------------------------------------------------------------------------------------------------------------
-        def random_note():
-            global notes_list, check_notes, scoredict
-            notes_list = ['C', 'C1', 'D', 'D1', 'E', 'E1', 'F', 'F1', 'G', 'G1', 'A', 'A1', 'B', 'B1']
-            
-            scoredict = {}
-            for note in notes_list:
+        global notes_list, tones_list, scoredict, tone_scoredict
+        notes_list = ['C', 'C1', 'D', 'D1', 'E', 'E1', 'F', 'F1', 'G', 'G1', 'A', 'A1', 'B', 'B1']        
+        scoredict = {} #preallocation.
+        for note in notes_list:
                 scoredict[note] = 0
-
+        tones_list = ['C', 'C1', 'D', 'D1', 'E', 'E1', 'F', 'F1', 'G', 'G1', 'A', 'A1', 'B', 'B1']
+        tone_scoredict = {} # for the tone recognition part. preallocation
+        for tone in tones_list:
+            tone_scoredict[tone] = 0
+        """
+        The following part concerns the code for the note recognition training. it consists of a function to draw random notes and the interface to operate in.
+        Start the game by typing python --> import musical_notes --> musical_notes.game_notes() in your terminal and select the training mode of your choice.
+        """ 
+        # Create randomized notes:----------------------------------------------------------------------------------------------------------------------------------
+        def random_note(): #function that draws a random note when you need it
+            global notes_list, check_notes
+            
             # Creating a random note to draw:-------------------------------------------------------------------
-            global randnumb, randnote
+            global randnumb, randnote, note_image
             randnumb = randint(0, len(notes_list)-1)
             randnote = "musical_notes/musicalnotes/" + notes_list[randnumb]+".png"
             global check_note
@@ -55,12 +64,12 @@ class game_notes:
         # Creating the answer function:------------------------------------------------------------------------------------------------------------------------------
         def start_note_practice_answer ():
             answer = answer_box.get()
-            answer = ''.join([i for i in answer if not i.isdigit()]) # Removes all the numbers for different octaves from the answer inputs
+            answer = ''.join([i for i in answer if not i.isdigit()]) # Removes all the numbers for different octaves from the answer inputs. We use two octaves in the program, and want either the higher or lower note (C or C1, for example), to be accepted.
             if answer == check_note:
-                scoredict[notes_list[randnumb]] += 1
+                scoredict[notes_list[randnumb]] += 1 #add one to the score for that note if it's correct.
                 response = "Correct! The answer is " + check_note + ". Your score for the note " + notes_list[randnumb] + " is " + str(scoredict[notes_list[randnumb]])    
             else:
-                scoredict[notes_list[randnumb]] -= 1
+                scoredict[notes_list[randnumb]] -= 1 #subtract one from the score for that note of the answer is incorrect.
                 response = "Incorrect. The right answer is " + check_note + ". Your score for the note " + notes_list[randnumb] + " is " + str(scoredict[notes_list[randnumb]])
             answer_label.config(text=response)
             answer_label.pack(pady=15)
@@ -77,25 +86,9 @@ class game_notes:
             hide_other_frames()
             # Start the note practice screen:--------------------------------------------------------------------
             start_note_practice_frame.pack(fill= BOTH, expand=1)
-<<<<<<< Updated upstream
             my_label = Label(start_note_practice_frame, text = "Note practice").pack()
-            # List of all the different notes that will be in the test:
-            notes_list = ['C_test', 'C1_test', 'D_test', 'D1_test', 'E_test', 'E1_test', 'F_test', 'F1_test', 'G_test', 'G1_test', 'A_test', 'A1_test', 'B_test', 'B1_test']
-
-            # Random number generator:
-            def randimg (self, inputlist):
-                randnumb = randint(0, len(inputlist)-1)
-                randnote = "musical_notes/musicalnotes/" + inputlist[randnumb]+".png"
-
-            # Creating images:
-            global note_image
-            note_image = ImageTk.PhotoImage(Image.open(randimg(notes_list)))
-            show_note = Label(start_note_practice_frame, image=note_image)
-=======
-            note_label = Label(start_note_practice_frame, text = "Note practice").pack()
             global show_note
             show_note = Label(start_note_practice_frame)
->>>>>>> Stashed changes
             show_note.pack(pady=15)
             random_note()
             
@@ -116,44 +109,33 @@ class game_notes:
             global answer_label
             answer_label = Label(start_note_practice_frame, text = "", font = ("Calibri", 18), bg = "white")
             answer_label.pack(pady=15)
-        # Creating Infoboxes----------------------------------------------------------------------------------------------------------------------------------------
-        def note_infobox():
-            hide_other_frames()
-            note_infobox_frame.pack(fill=BOTH, expand=1)
-            my_label = Label(note_infobox_frame, text = "Information").pack()
+
 
         # Hiding other frames, including what's in previous similar frames:-----------------------------------------------------------------------------------------
         def hide_other_frames():
-            for widget in start_note_practice_frame.winfo_children():
+            for widget in start_note_practice_frame.winfo_children(): #whenever a frame is selected from the menu, all other previously selected frames have to be closed down.
                 widget.destroy()
-            for widget in note_infobox_frame.winfo_children():
+            for widget in note_infobox_frame.winfo_children(): #frame close info
+                widget.destroy()
+            for widget in start_tone_practice_frame.winfo_children(): #frame close tones
                 widget.destroy()
             start_note_practice_frame.pack_forget()
             note_infobox_frame.pack_forget()
+            start_tone_practice_frame.pack_forget()
 
-        # Create randomized notes:----------------------------------------------------------------------------------------------------------------------------------
+        # Create randomized tones:----------------------------------------------------------------------------------------------------------------------------------
         def random_tone():
             '''
             This part concerns the creation of the flashcards for practicing tonal recognition.
             It is similar to the program used for note recognition, but instead of pictures of notes, we import piano sounds for the different tones.
             '''
-            sound_image = Image.open("musical_notes/musicaltones/soundimage.jpg")
-            sound_image = sound_image.resize((90, 90), Image.ANTIALIAS)
-            sound_image = ImageTk.PhotoImage(sound_image)
-            show_tone.config(image=sound_image, bg = "white")
-            show_tone.pack(pady=15)
-            global tones_list, check_tones, tone_scoredict
-            tones_list = ['C', 'C1', 'D', 'D1', 'E', 'E1', 'F', 'F1', 'G', 'G1', 'A', 'A1', 'B', 'B1']
-            tone_scoredict = {}
-            for tone in tones_list:
-                tone_scoredict[tone] = 0
             # Creating a random tone to play:-------------------------------------------------------------------------
             global randnumb
-            randnumb = randint(0, len(tones_list)-1)
-            randtone = "musical_notes/musicaltones/" + tones_list[randnumb]+".mp3"
+            randnumb = randint(0, len(tones_list)-1) #drawing a random number for the tones list.
+            randtone = "musical_notes/musicaltones/" + tones_list[randnumb]+".mp3" #selecting the tone sounds
             
             global check_tone
-            check_tone = tones_list[randnumb]
+            check_tone = tones_list[randnumb] # we want the program to accept an anser regardless of the octave: C1 should be transformed to C:
             check_tone = ''.join([i for i in check_tone if not i.isdigit()])
             # Creating images:
             global tone_sound
@@ -161,13 +143,14 @@ class game_notes:
          
         # Creating the answer function:----------------------------------------------------------------------------------------------------------------------------
         def start_tone_practice_answer ():
+            global response
             answer = tone_answer_box.get()
             answer = ''.join([i for i in answer if not i.isdigit()]) # Removes all the numbers for different octaves from the answer inputs
             if answer == check_tone:
-                tone_scoredict[tones_list[randnumb]] += 1
+                tone_scoredict[tones_list[randnumb]] += 1 #add one to the score for that tone
                 response = "Correct! The answer is " + check_tone + ". Your score for the tone " + tones_list[randnumb] + " is " + str(tone_scoredict[tones_list[randnumb]])   
             else:
-                tone_scoredict[tones_list[randnumb]] -= 1
+                tone_scoredict[tones_list[randnumb]] -= 1 # subtract one from the score for that tone.
                 response = "Incorrect. The right answer is " + check_tone + ". Your score for the tone " + tones_list[randnumb] + " is " + str(tone_scoredict[tones_list[randnumb]])
             tone_answer_label.config(text=response)
             tone_answer_label.pack(pady=15)
@@ -175,8 +158,8 @@ class game_notes:
            # Clearing the answer box:
             time.sleep(2)
             tone_answer_label.pack_forget()
-            tone_answer_box.delete(0, 'end')
-            root.update_idletasks()
+            tone_answer_box.delete(0, 'end') # Remove everything that was typed into the answer box as soon as answer is selected
+            root.update_idletasks() #updates the graphical interface before returning to the main loop.
             
             random_tone()
         # Creating flashcards for tones:----------------------------------------------------------------------------------------------------------------------------
@@ -208,24 +191,42 @@ class game_notes:
             global tone_answer_label
             tone_answer_label = Label(start_tone_practice_frame, text = "", font = ("Calibri", 18), bg = "white")
             tone_answer_label.pack(pady=15)
-        
+
+        # Creating Infobox------------------------------------------------------------------------------------------------------------------------------------------
+        def note_infobox():
+            hide_other_frames()
+            note_infobox_frame.pack(fill=BOTH, expand=1)
+            my_label = Label(note_infobox_frame, text = "Information").pack()
+            T = Text(note_infobox_frame, height = 15, width = 80, wrap = WORD, font = ("Calibri", 12), bg = "white")
+            infotext = """This tool can be used to either learn to read musical notes or to develop pitch memory.
+            
+Start by clicking on Training on the top left of the pop-up window and select either Note Practice to practice learning notes, or Tone Practice to learn to recognize different tones! 
+The program will show you your live score for a note or tone after you've given your answer for that note or tone so that you can keep track of your progress. 
+
+Done practicing? Either close the program by clicking the standard shut down cross, or select Exit from the Training drop-down menu. Good luck!"""
+            T.insert(INSERT, infotext)
+            T.pack()
+            
+            
+
         # Creating an overarching menu:--------------------------------------------------------------------------------------------------------------------------
         main_menu = Menu(root)
         root.config(menu = main_menu)
 
         # Creating menu items:-----------------------------------------------------------------------------------------------------------------------------------
         notes_menu = Menu(main_menu)
-        main_menu.add_cascade(label = "Note practice", menu = notes_menu)
+        main_menu.add_cascade(label = "Menu", menu = notes_menu)
         notes_menu.add_command(label = "Note Practice", command = start_note_practice)
         notes_menu.add_command(label = "Tone practice", command = start_tone_practice)
         notes_menu.add_command(label = "Information", command = note_infobox)
         notes_menu.add_separator()
-        notes_menu.add_command(label = "Exit", command = root.quit)
+        notes_menu.add_command(label = "Exit", command = root.destroy)
+
+
 
         # Creating frames:---------------------------------------------------------------------------------------------------------------------------------------
         start_note_practice_frame = Frame(root, width = 700, height = 500, bg = "white")
         start_tone_practice_frame = Frame(root, width = 700, height = 500, bg = "white")
-        note_infobox_frame = Frame(root, width = 500, height = 500)
+        note_infobox_frame = Frame(root, width = 700, height = 500)
 
         root.mainloop()
-
